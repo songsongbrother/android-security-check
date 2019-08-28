@@ -2,132 +2,40 @@
 // Created by 陈颂颂 on 2019/8/27.
 //
 
-#include "anti-debug.h"
-
 #include <jni.h>
 #include <string>
 #include <sys/ptrace.h>
-#include <jni.h>
-#include <string>
 #include<iostream>
 #include<sstream>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <stdlib.h>
 #include <fcntl.h>
 #include "android/log.h"
 #include <errno.h>
-#include <elf.h>
 #include <dlfcn.h>
-#include <sys/ptrace.h>
 #include <time.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <string.h>
-#include <asm/unistd.h>
 #include <stdio.h>
-#include <Android/log.h>
-#include <errno.h>
-#include <unistd.h>
 #include <sys/mman.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/ptrace.h>
 #include <stdbool.h>
 
-#define LOG_TAG "GToad"
-#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args);
+#include "include/anti-debug.h"
+#include "include/tools.h"
+#include "include/song-log.h"
+
 #define K 1024
 #define WRITELEN (128*K)
 #define MAX (128*K)
 
-
-extern "C"
-unsigned long getLibAddr(const char *lib) {
-    puts("Enter getLibAddr");
-    unsigned long addr = 0;
-    char lineBuf[256];
-
-    snprintf(lineBuf, 256 - 1, "/proc/%d/maps", getpid());
-    FILE *fp = fopen(lineBuf, "r");
-    if (fp == NULL) {
-        perror("fopen failed");
-        goto bail;
-    }
-    while (fgets(lineBuf, sizeof(lineBuf), fp)) {
-        if (strstr(lineBuf, lib)) {
-            char *temp = strtok(lineBuf, "-");
-            addr = strtoul(temp, NULL, 16);
-            break;
-        }
-    }
-    bail:
-    fclose(fp);
-    return addr;
+jstring stringFromJNI(JNIEnv *env) {
+    std::string hello = "Hello from C++";
+    return env->NewStringUTF(hello.c_str());
 }
 
-bool checkBreakPoint() {
-    __android_log_print(ANDROID_LOG_INFO, "JNI", "13838438");
-    int i, j;
-    unsigned int base, offset, pheader;
-    Elf32_Ehdr *elfhdr;
-    Elf32_Phdr *ph_t;
-
-    base = getLibAddr("libnative-lib.so");
-
-    if (base == 0) {
-        LOGI ("getLibAddr failed");
-        return false;
-    }
-    __android_log_print(ANDROID_LOG_INFO, "JNI", "13838439");
-
-    elfhdr = (Elf32_Ehdr *) base;
-    pheader = base + elfhdr->e_phoff;
-
-    for (i = 0; i < elfhdr->e_phnum; i++) {
-        ph_t = (Elf32_Phdr *) (pheader + i * sizeof(Elf32_Phdr)); // traverse program header
-
-        if (!(ph_t->p_flags & 1)) continue;
-        offset = base + ph_t->p_vaddr;
-        offset += sizeof(Elf32_Ehdr) + sizeof(Elf32_Phdr) * elfhdr->e_phnum;
-
-        char *p = (char *) offset;
-        for (j = 0; j < ph_t->p_memsz; j++) {
-            if (*p == 0x01 && *(p + 1) == 0xde) {
-                LOGI ("Find thumb bpt %p", p);
-                return true;
-            } else if (*p == 0xf0 && *(p + 1) == 0xf7 && *(p + 2) == 0x00 && *(p + 3) == 0xa0) {
-                LOGI ("Find thumb2 bpt %p", p);
-                return true;
-            } else if (*p == 0x01 && *(p + 1) == 0x00 && *(p + 2) == 0x9f && *(p + 3) == 0xef) {
-                LOGI ("Find arm bpt %p", p);
-                return true;
-            }
-            p++;
-        }
-    }
-    return false;
-}
-
-//extern "C"
-//JNIEXPORT jstring
-//
-//JNICALL
-//Java_com_song_check_MainActivity_stringFromJNI(
-//        JNIEnv *env,
-//        jobject /* this */) {
-//    std::string hello = "Hello from C++";
-//    return env->NewStringUTF(hello.c_str());
-//}
-
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromTime(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromTime(JNIEnv *env) {
     long start, end;
     start = clock();
     std::string hello = "Hello from time";
@@ -138,13 +46,7 @@ Java_com_song_check_MainActivity_stringFromTime(
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromFile(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromFile(JNIEnv *env) {
     std::string hello;
     std::stringstream stream;
     int pid = getpid();
@@ -178,35 +80,17 @@ Java_com_song_check_MainActivity_stringFromFile(
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromTrick(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromTrick(JNIEnv *env) {
     std::string hello = "Hello from trick";
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromVm(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromVm(JNIEnv *env) {
     std::string hello = "Hello from vm";
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromPtrace(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromPtrace(JNIEnv *env) {
     int check = ptrace(PTRACE_TRACEME, 0, 0, 0);
     LOGI("ret of ptrace : %d", check);
     std::string hello = "Hello from ptrace";
@@ -216,13 +100,7 @@ Java_com_song_check_MainActivity_stringFromPtrace(
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromBkpt(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromBkpt(JNIEnv *env) {
     std::string hello = "Hello from bkpt";
     if (checkBreakPoint())
         hello = "Debug from bkpt";
@@ -291,13 +169,7 @@ void my_sigtrap(int sig) {
 //
 //}
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromSignal(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromSignal(JNIEnv *env) {
 //    anti4();
     std::string hello = "Hello from signal";
     return env->NewStringUTF(hello.c_str());
@@ -381,13 +253,7 @@ void anti3() {
     }
 }
 
-extern "C"
-JNIEXPORT jstring
-
-JNICALL
-Java_com_song_check_MainActivity_stringFromFork(
-        JNIEnv *env,
-        jobject /* this */) {
+jstring stringFromFork(JNIEnv *env) {
     std::string hello = "Hello from fork";
     pthread_t id_0;
     id_0 = pthread_self();
