@@ -7,8 +7,6 @@
 #ifndef ANDROID_SECURITY_CHECK_ANTI_DEBUG_H
 #define ANDROID_SECURITY_CHECK_ANTI_DEBUG_H
 
-jstring stringFromJNI(JNIEnv *env);
-
 jstring stringFromTime(JNIEnv *env);
 
 jstring stringFromFile(JNIEnv *env);

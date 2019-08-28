@@ -21,10 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
-
         Button time_button = (Button)findViewById(R.id.time_button);
         Button file_button = (Button)findViewById(R.id.file_button);
         Button trick_button = (Button)findViewById(R.id.trick_button);
@@ -104,11 +100,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
     public native String stringFromTime();
     public native String stringFromFile();
     public native String stringFromTrick();

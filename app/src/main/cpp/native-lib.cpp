@@ -8,11 +8,6 @@
  */
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_song_check_MainActivity_stringFromJNI(JNIEnv *env, jobject /* this */) {
-    return stringFromJNI(env);
-}
-
-extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_MainActivity_stringFromTime(JNIEnv *env, jobject /* this */) {
     return stringFromTime(env);
 }

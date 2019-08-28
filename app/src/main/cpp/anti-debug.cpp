@@ -30,11 +30,6 @@
 #define WRITELEN (128*K)
 #define MAX (128*K)
 
-jstring stringFromJNI(JNIEnv *env) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
-}
-
 jstring stringFromTime(JNIEnv *env) {
     long start, end;
     start = clock();
@@ -70,7 +65,7 @@ jstring stringFromFile(JNIEnv *env) {
     strncpy(buf, c + 11, length - 11);
     buf[length - 11] = '\0';
     hello = buf;
-    if (strcmp(buf, "0")) {
+    if (strcmp(buf, "0") != 0) {
         hello = "Debug from file";
     } else {
         hello = "Hello from file";
@@ -201,7 +196,7 @@ void *anti3_thread(void *) {
         sleep(1);
 
         LOGI("pip--> statue2 = %d", statue);
-        if (statue != 0) {
+        if (statue != 0 && statue != -1) {
             kill(childpid, SIGKILL);
             kill(getpid(), SIGKILL);
             return NULL;

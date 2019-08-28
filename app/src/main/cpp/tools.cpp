@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <elf.h>
+
 #include "include/tools.h"
 #include "include/song-log.h"
 
