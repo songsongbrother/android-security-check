@@ -23,7 +23,7 @@
 #include <stdbool.h>
 
 #include "include/anti-debug.h"
-#include "include/tools.h"
+#include "include/song-tools.h"
 #include "include/song-log.h"
 
 #define K 1024

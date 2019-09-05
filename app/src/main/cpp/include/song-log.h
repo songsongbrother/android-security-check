@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-#ifndef ANDROID_SECURITY_CHECK_LOG_H
-#define ANDROID_SECURITY_CHECK_LOG_H
+#ifndef ANDROID_SECURITY_CHECK_SONG_LOG_H
+#define ANDROID_SECURITY_CHECK_SONG_LOG_H
 
 #include <android/log.h>
 
@@ -26,7 +26,7 @@ extern "C" {
 #define LOGW(...)
 #endif
 
-#endif // ANDROID_SECURITY_CHECK_LOG_H
+#endif // ANDROID_SECURITY_CHECK_SONG_LOG_H
 
 #ifdef __cplusplus
 }
