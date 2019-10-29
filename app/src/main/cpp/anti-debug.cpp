@@ -49,7 +49,7 @@ jstring stringFromFile(JNIEnv *env) {
     stream << pid;
     stream >> hello;
     hello = "/proc/" + hello + "/status";
-    //LOGI(hello);
+//    LOGI(hello);
     char *pathname = new char[30];
     strcpy(pathname, hello.c_str());
     char *buf = new char[500];

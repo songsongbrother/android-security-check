@@ -15,11 +15,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button anti_debug = ((Button) findViewById(R.id.btn_anti_debug));
+        Button anti_hook = ((Button) findViewById(R.id.btn_anti_hook));
+        Button anti_dk = ((Button) findViewById(R.id.btn_anti_dk));
+        Button anti_emulator = ((Button) findViewById(R.id.btn_anti_emulator));
 
         anti_debug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), AntiDebugActivity.class));
+            }
+        });
+        anti_hook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), AntiHookActivity.class));
+            }
+        });
+        anti_dk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), AntiDKActivity.class));
+            }
+        });
+        anti_emulator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), AntiEmulatorActivity.class));
             }
         });
     }

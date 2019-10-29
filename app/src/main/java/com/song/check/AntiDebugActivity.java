@@ -8,6 +8,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * 反调试
+ * Created by chensongsong on 2019/10/29.
+ */
 public class AntiDebugActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
