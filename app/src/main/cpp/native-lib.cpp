@@ -9,12 +9,12 @@
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromTime(JNIEnv *env, jobject /* this */) {
-    return stringFromTime(env);
+    return timeCheck(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromFile(JNIEnv *env, jobject /* this */) {
-    return stringFromFile(env);
+    return tracerIdCheck(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -24,7 +24,7 @@ Java_com_song_check_AntiDebugActivity_stringFromTrick(JNIEnv *env, jobject /* th
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromVm(JNIEnv *env, jobject /* this */) {
-    return stringFromVm(env);
+    return vmCheck(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -44,5 +44,5 @@ Java_com_song_check_AntiDebugActivity_stringFromSignal(JNIEnv *env, jobject /* t
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromFork(JNIEnv *env, jobject /* this */) {
-    return stringFromFork(env);
+    return daemonCheck(env);
 }

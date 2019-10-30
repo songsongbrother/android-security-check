@@ -7,13 +7,13 @@
 #ifndef ANDROID_SECURITY_CHECK_ANTI_DEBUG_H
 #define ANDROID_SECURITY_CHECK_ANTI_DEBUG_H
 
-jstring stringFromTime(JNIEnv *env);
+jstring timeCheck(JNIEnv *env);
 
-jstring stringFromFile(JNIEnv *env);
+jstring tracerIdCheck(JNIEnv *env);
 
 jstring stringFromTrick(JNIEnv *env);
 
-jstring stringFromVm(JNIEnv *env);
+jstring vmCheck(JNIEnv *env);
 
 jstring stringFromPtrace(JNIEnv *env);
 
@@ -21,6 +21,6 @@ jstring stringFromBkpt(JNIEnv *env);
 
 jstring stringFromSignal(JNIEnv *env);
 
-jstring stringFromFork(JNIEnv *env);
+jstring daemonCheck(JNIEnv *env);
 
 #endif //ANDROID_SECURITY_CHECK_ANTI_DEBUG_H

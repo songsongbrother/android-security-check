@@ -55,7 +55,7 @@ static void *daemon_thread(void *) {
             kill(child_pid, SIGKILL);
 //            kill(getpid(), SIGKILL);
 
-            daemon_tag = 1;
+//            daemon_tag = 1;
 
             // 结束线程循环
             return NULL;

@@ -27,14 +27,17 @@
 #include "include/song-log.h"
 #include "include/gt-mob-daemon.h"
 
-#define K 1024
-#define WRITELEN (128*K)
-#define MAX (128*K)
+using std::string;
 
-jstring stringFromTime(JNIEnv *env) {
+/**
+ * 时间检测
+ * @param env
+ * @return
+ */
+jstring timeCheck(JNIEnv *env) {
     long start, end;
     start = clock();
-    std::string hello = "Hello from time";
+    string hello = "Hello from time";
     end = clock();
     if (end - start > 10000) {
         hello = "Debug from time";
@@ -42,54 +45,79 @@ jstring stringFromTime(JNIEnv *env) {
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromFile(JNIEnv *env) {
-    std::string hello;
-    std::stringstream stream;
+/**
+ * tracerId 检测
+ * @param env
+ * @return
+ */
+jstring tracerIdCheck(JNIEnv *env) {
+
+    string hello;
     int pid = getpid();
+    char path[32];
+    sprintf(path, "/proc/%d/status", pid);
+    LOGI("status path:%s", path);
+
     int fd;
-    stream << pid;
-    stream >> hello;
-    hello = "/proc/" + hello + "/status";
-//    LOGI(hello);
-    char *pathname = new char[30];
-    strcpy(pathname, hello.c_str());
-    char *buf = new char[500];
-    int flag = O_RDONLY;
-    fd = open(pathname, flag);
-    read(fd, buf, 500);
-    char *c;
+    char *buf = new char[512];
+    fd = open(path, O_RDONLY | O_CLOEXEC);
+    read(fd, buf, 512);
+
+    char *idStart;
     const char *tra = "TracerPid";
-    c = strstr(buf, tra);
-    char *d;
-    d = strstr(c, "\n");
-    int length = d - c;
-    strncpy(buf, c + 11, length - 11);
-    buf[length - 11] = '\0';
-    hello = buf;
-    if (strcmp(buf, "0") != 0) {
+    idStart = strstr(buf, tra);
+    char *idEnd;
+    idEnd = strstr(idStart, "\n");
+    unsigned long length = idEnd - idStart;
+    char line[64];
+    strncpy(line, idStart, length);
+    char tracerPid[16];
+    sscanf(line, "TracerPid:%*[^0-9]%64[0-9]", tracerPid);
+    LOGI("line: %s tracerPid: %s", line, tracerPid);
+
+    if (strcmp(tracerPid, "0") != 0) {
         hello = "Debug from file";
     } else {
         hello = "Hello from file";
     }
+
     close(fd);
+    free(buf);
 
     return env->NewStringUTF(hello.c_str());
 }
 
 jstring stringFromTrick(JNIEnv *env) {
-    std::string hello = "Hello from trick";
+    string hello = "Hello from trick";
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromVm(JNIEnv *env) {
-    std::string hello = "Hello from vm";
+/**
+ * 虚拟机标识检测
+ * @param env
+ * @return
+ */
+jstring vmCheck(JNIEnv *env) {
+
+    string hello;
+
+    // android.os.Debug.isDebuggerConnected()
+    jclass debug_class = env->FindClass("android/os/Debug");
+    jmethodID isDebug_mId = env->GetStaticMethodID(debug_class, "isDebuggerConnected", "()Z");
+    jboolean isDebug = env->CallStaticBooleanMethod(debug_class, isDebug_mId);
+    if (isDebug) {
+        hello = "vm environment";
+    } else {
+        hello = "not vm environment";
+    }
+
     return env->NewStringUTF(hello.c_str());
 }
 
 jstring stringFromPtrace(JNIEnv *env) {
     int check = ptrace(PTRACE_TRACEME, 0, 0, 0);
     LOGI("ret of ptrace : %d", check);
-    std::string hello = "Hello from ptrace";
+    string hello = "Hello from ptrace";
     if (check != 0) {
         hello = "Debug from ptrace";
     }
@@ -97,7 +125,7 @@ jstring stringFromPtrace(JNIEnv *env) {
 }
 
 jstring stringFromBkpt(JNIEnv *env) {
-    std::string hello = "Hello from bkpt";
+    string hello = "Hello from bkpt";
     if (checkBreakPoint())
         hello = "Debug from bkpt";
     return env->NewStringUTF(hello.c_str());
@@ -167,11 +195,16 @@ void my_sigtrap(int sig) {
 
 jstring stringFromSignal(JNIEnv *env) {
 //    anti4();
-    std::string hello = "Hello from signal";
+    string hello = "Hello from signal";
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromFork(JNIEnv *env) {
+/**
+ * 守护进程测试
+ * @param env
+ * @return
+ */
+jstring daemonCheck(JNIEnv *env) {
     startDaemon();
-    return env->NewStringUTF("hello.");
+    return env->NewStringUTF("Daemon started.");
 }
