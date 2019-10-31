@@ -18,23 +18,18 @@ Java_com_song_check_AntiDebugActivity_stringFromFile(JNIEnv *env, jobject /* thi
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_song_check_AntiDebugActivity_stringFromTrick(JNIEnv *env, jobject /* this */) {
-    return stringFromTrick(env);
-}
-
-extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromVm(JNIEnv *env, jobject /* this */) {
     return vmCheck(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromPtrace(JNIEnv *env, jobject /* this */) {
-    return stringFromPtrace(env);
+    return ptraceCheck(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_song_check_AntiDebugActivity_stringFromBkpt(JNIEnv *env, jobject /* this */) {
-    return stringFromBkpt(env);
+    return checkBreakPoint(env);
 }
 
 extern "C" JNIEXPORT jstring JNICALL

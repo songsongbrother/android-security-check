@@ -87,11 +87,6 @@ jstring tracerIdCheck(JNIEnv *env) {
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromTrick(JNIEnv *env) {
-    string hello = "Hello from trick";
-    return env->NewStringUTF(hello.c_str());
-}
-
 /**
  * 虚拟机标识检测
  * @param env
@@ -106,16 +101,21 @@ jstring vmCheck(JNIEnv *env) {
     jmethodID isDebug_mId = env->GetStaticMethodID(debug_class, "isDebuggerConnected", "()Z");
     jboolean isDebug = env->CallStaticBooleanMethod(debug_class, isDebug_mId);
     if (isDebug) {
-        hello = "vm environment";
+        hello = "Debug from file";
     } else {
-        hello = "not vm environment";
+        hello = "Hello from file";
     }
 
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromPtrace(JNIEnv *env) {
-    int check = ptrace(PTRACE_TRACEME, 0, 0, 0);
+/**
+ * 自己 ptrace 自己，抢先占据(失效)
+ * @param env
+ * @return
+ */
+jstring ptraceCheck(JNIEnv *env) {
+    int check = ptrace(PTRACE_TRACEME, getpid(), NULL, NULL);
     LOGI("ret of ptrace : %d", check);
     string hello = "Hello from ptrace";
     if (check != 0) {
@@ -124,17 +124,32 @@ jstring stringFromPtrace(JNIEnv *env) {
     return env->NewStringUTF(hello.c_str());
 }
 
-jstring stringFromBkpt(JNIEnv *env) {
+/**
+ * 断点扫描
+ * @param env
+ * @return
+ */
+jstring checkBreakPoint(JNIEnv *env) {
     string hello = "Hello from bkpt";
     if (checkBreakPoint())
         hello = "Debug from bkpt";
     return env->NewStringUTF(hello.c_str());
 }
 
-char dynamic_ccode[] = {0x1f, 0xb4, //push {r0-r4}
-                        0x01, 0xde, //breakpoint
-                        0x1f, 0xbc, //pop {r0-r4}
-                        0xf7, 0x46};//mov pc,lr
+/**
+ * 守护进程测试
+ * @param env
+ * @return
+ */
+jstring daemonCheck(JNIEnv *env) {
+    startDaemon();
+    return env->NewStringUTF("Daemon started.");
+}
+
+//char dynamic_ccode[] = {0x1f, 0xb4, //push {r0-r4}
+//                        0x01, 0xde, //breakpoint
+//                        0x1f, 0xbc, //pop {r0-r4}
+//                        0xf7, 0x46};//mov pc,lr
 
 char *g_addr = 0;
 
@@ -197,14 +212,4 @@ jstring stringFromSignal(JNIEnv *env) {
 //    anti4();
     string hello = "Hello from signal";
     return env->NewStringUTF(hello.c_str());
-}
-
-/**
- * 守护进程测试
- * @param env
- * @return
- */
-jstring daemonCheck(JNIEnv *env) {
-    startDaemon();
-    return env->NewStringUTF("Daemon started.");
 }

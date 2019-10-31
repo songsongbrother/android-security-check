@@ -47,8 +47,6 @@ public class AntiDebugActivity extends AppCompatActivity {
         trick_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = getApplicationContext();
-                Toast.makeText(context, stringFromTrick(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -97,8 +95,6 @@ public class AntiDebugActivity extends AppCompatActivity {
     public native String stringFromTime();
 
     public native String stringFromFile();
-
-    public native String stringFromTrick();
 
     public native String stringFromVm();
 

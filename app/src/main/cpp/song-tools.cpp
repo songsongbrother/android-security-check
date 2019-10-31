@@ -24,7 +24,9 @@ unsigned long getLibAddr(const char *lib) {
     }
     while (fgets(lineBuf, sizeof(lineBuf), fp)) {
         if (strstr(lineBuf, lib)) {
+            LOGI("maps line: %s", lineBuf);
             char *temp = strtok(lineBuf, "-");
+            LOGI("lib address: %s", temp);
             addr = strtoul(temp, NULL, 16);
             break;
         }
@@ -48,6 +50,7 @@ bool checkBreakPoint() {
         return false;
     }
     LOGI("13838439");
+    LOGI("base address: %d", base);
 
     elfhdr = (Elf32_Ehdr *) base;
     pheader = base + elfhdr->e_phoff;

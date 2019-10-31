@@ -11,13 +11,11 @@ jstring timeCheck(JNIEnv *env);
 
 jstring tracerIdCheck(JNIEnv *env);
 
-jstring stringFromTrick(JNIEnv *env);
-
 jstring vmCheck(JNIEnv *env);
 
-jstring stringFromPtrace(JNIEnv *env);
+jstring ptraceCheck(JNIEnv *env);
 
-jstring stringFromBkpt(JNIEnv *env);
+jstring checkBreakPoint(JNIEnv *env);
 
 jstring stringFromSignal(JNIEnv *env);
 
